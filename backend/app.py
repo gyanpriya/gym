@@ -9,7 +9,10 @@ import logging
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__,
+        static_folder="../frontend",   # your frontend folder
+        static_url_path=""
+)
 CORS(app)
 
 # Configure logging
@@ -304,26 +307,7 @@ diet_generator = DietPlanGenerator()
 
 @app.route('/')
 def index():
-    """Serve the main website"""
-    # Read the frontend HTML file
-    try:
-        with open('frontend/index.html', 'r', encoding='utf-8') as f:
-            return f.read()
-    except FileNotFoundError:
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Everytime Fitness - Setup Required</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
-            <h1>🏋️‍♂️ Everytime Fitness</h1>
-            <p>Backend is running! Please set up the frontend files.</p>
-            <p>API endpoint available at: <code>/api/generate-diet-plan</code></p>
-        </body>
-        </html>
-        """
+    return app.send_static_file('index.html')
 
 @app.route('/api/generate-diet-plan', methods=['POST'])
 def generate_diet_plan():
